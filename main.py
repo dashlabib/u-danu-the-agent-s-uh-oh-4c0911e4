@@ -48,6 +48,17 @@ def main() -> None:
     with open(OUTPUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(WORD + "\n")
 
+    # Read-back verification: re-read the file and confirm it holds
+    # exactly the word plus a trailing newline. This guards against
+    # a partial or truncated write leaving a corrupt entry behind.
+    with open(OUTPUT_PATH, "r", encoding="utf-8", newline="\n") as f:
+        written = f.read()
+    if written != WORD + "\n":
+        raise SystemExit(
+            f"verification failed: /output/entry.txt holds {written!r}, "
+            f"expected {WORD + chr(10)!r}"
+        )
+
 
 if __name__ == "__main__":
     main()
